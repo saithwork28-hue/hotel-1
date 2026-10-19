@@ -1,34 +1,90 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Payment · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head><body>
-<header><a class="logo" href="index.html">tasteo</a><a href="cart.html">Cart</a><a href="track.html">Track order</a></header>
-<main><h1>Payment</h1><div id="sum" class="m"></div>
-<div id="s1"><b>Delivery details</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad" placeholder="House no, street, area, Nagercoil">
-<b style="display:block;margin-top:14px">Payment method</b>
-<button class="pay on" data-pay="upi"><span>📱</span><div><b>UPI</b><small>GPay, PhonePe, Paytm</small></div></button>
-<button class="pay" data-pay="cod"><span>💵</span><div><b>Cash on delivery</b><small>Pay when it arrives</small></div></button>
-<div id="er" class="err"></div><button class="btn" id="go"></button></div>
-<div id="s2" hidden><p class="m">On mobile, tap the button to open your UPI app. On desktop, scan the QR code with any UPI app.</p><div class="qr" id="qr"></div><a class="btn" id="lnk" href="#">Pay with UPI app</a>
-<p class="m" style="margin-top:16px">After paying, enter the 12-digit UPI reference (UTR) from your app.</p><input class="f" id="utr" inputmode="numeric" maxlength="12" placeholder="12-digit UPI reference number"><div id="er2" class="err"></div><button class="btn" id="done">I have paid · place order</button></div></main>
-<script src="shared.js"></script><script>
-const c=getCart();if(!Object.keys(c).length)location.href="cart.html";
-const B=bill(c);let pay="upi",det={};
-$("sum").textContent="Total to pay: "+inr(B.t)+" · "+Object.values(c).reduce((a,v)=>a+v.q,0)+" items";
-const lbl=()=>$("go").textContent=pay=="upi"?"Continue to UPI payment · "+inr(B.t):"Place order · pay "+inr(B.t)+" on delivery";lbl();
-const showErr=t=>{$("er").textContent=t;$("er2").textContent=t};
-document.querySelectorAll(".pay").forEach(b=>b.onclick=()=>{pay=b.dataset.pay;document.querySelectorAll(".pay").forEach(x=>x.classList.toggle("on",x==b));lbl()});
-$("go").onclick=()=>{const n=$("nm").value.trim(),p=$("ph").value.trim(),a=$("ad").value.trim();
- if(n.length<2||!/^[6-9]\d{9}$/.test(p)||a.length<5)return showErr("Enter your name, a valid 10-digit mobile number and a full address.");
- showErr("");det={n,p,a};if(pay=="cod")return submit(null);
- $("s1").hidden=true;$("s2").hidden=false;
- const link=`upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(STORE)}&am=${B.t}&cu=INR&tn=Tasteo%20order`;$("lnk").href=link;
- try{new QRCode($("qr"),{text:link,width:190,height:190})}catch(e){$("qr").textContent="QR unavailable. Use the button."}};
-$("done").onclick=()=>{const u=$("utr").value.trim();if(!/^\d{12}$/.test(u))return showErr("Enter the 12-digit UPI reference number.");submit(u)};
-async function submit(utr){if(!sb)return showErr("Not connected. Check SUPABASE_KEY in shared.js.");
- $("go").disabled=$("done").disabled=true;
- const items=Object.entries(c).map(([i,v])=>({id:+i,qty:v.q}));
- const r=await sb.rpc("place_order",{p_name:det.n,p_phone:det.p,p_addr:det.a,p_items:items,p_method:pay,p_utr:utr});
- if(r.error){showErr("Could not place order: "+r.error.message);$("go").disabled=$("done").disabled=false;return}
- try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p}))}catch(e){}
- setCart({});location.href="track.html"}
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Payment · Tasteo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+    <header><a class="logo" href="index.html">tasteo</a><a href="cart.html">Cart</a><a href="track.html">Track order</a>
+    </header>
+    <main>
+        <h1>Payment</h1>
+        <div id="sum" class="m"></div>
+        <div id="s1"><b>Delivery details</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph"
+                inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad"
+                placeholder="House no, street, area, Nagercoil">
+            <b style="display:block;margin-top:14px">Payment method</b>
+            <button class="pay on" data-pay="upi"><span>📱</span>
+                <div><b>UPI</b><small>GPay, PhonePe, Paytm</small></div>
+            </button>
+            <button class="pay" data-pay="cod"><span>💵</span>
+                <div><b>Cash on delivery</b><small>Pay when it arrives</small></div>
+            </button>
+            <div id="er" class="err"></div><button class="btn" id="go"></button>
+        </div>
+        <div id="s2" hidden>
+            <p class="m">On mobile, tap the button to open your UPI app. On desktop, scan the QR code with any UPI app.
+            </p>
+            <div class="qr" id="qr"></div><a class="btn" id="lnk" href="#">Pay with UPI app</a>
+            <p class="m" style="margin-top:16px">After paying, enter the 12-digit UPI reference (UTR) from your app.</p>
+            <input class="f" id="utr" inputmode="numeric" maxlength="12" placeholder="12-digit UPI reference number">
+            <div id="er2" class="err"></div><button class="btn" id="done">I have paid · place order</button>
+        </div>
+    </main>
+
+    <!-- Order placed popup -->
+    <div class="pop" id="pop">
+        <div class="box">
+            <div class="tick">✓</div>
+            <h2>Your order is placed!</h2>
+            <p class="m" id="pmsg"></p>
+            <a class="btn" href="track.html">Track order</a>
+            <a class="btn alt" href="index.html">Back to restaurants</a>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+        const c = getCart(); if (!Object.keys(c).length) location.href = "cart.html";
+        const B = bill(c); let pay = "upi", det = {};
+        $("sum").textContent = "Total to pay: " + inr(B.t) + " · " + Object.values(c).reduce((a, v) => a + v.q, 0) + " items";
+        const lbl = () => $("go").textContent = pay == "upi" ? "Continue to UPI payment · " + inr(B.t) : "Place order · pay " + inr(B.t) + " on delivery"; lbl();
+        const showErr = t => { $("er").textContent = t; $("er2").textContent = t };
+
+        // Shows the green "Your order is placed!" popup
+        function orderPopup(no, method) {
+            const how = method == "cod" ? "Pay on delivery" : "UPI payment submitted";
+            $("pmsg").textContent = (no ? "Order #" + no + " · " : "") + how + " · Arriving in about 30 mins";
+            $("pop").classList.add("show");
+        }
+
+        document.querySelectorAll(".pay").forEach(b => b.onclick = () => { pay = b.dataset.pay; document.querySelectorAll(".pay").forEach(x => x.classList.toggle("on", x == b)); lbl() });
+        $("go").onclick = () => {
+            const n = $("nm").value.trim(), p = $("ph").value.trim(), a = $("ad").value.trim();
+            if (n.length < 2 || !/^[6-9]\d{9}$/.test(p) || a.length < 5) return showErr("Enter your name, a valid 10-digit mobile number and a full address.");
+            showErr(""); det = { n, p, a }; if (pay == "cod") return submit(null);
+            $("s1").hidden = true; $("s2").hidden = false;
+            const link = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(STORE)}&am=${B.t}&cu=INR&tn=Tasteo%20order`; $("lnk").href = link;
+            try { new QRCode($("qr"), { text: link, width: 190, height: 190 }) } catch (e) { $("qr").textContent = "QR unavailable. Use the button." }
+        };
+        $("done").onclick = () => { const u = $("utr").value.trim(); if (!/^\d{12}$/.test(u)) return showErr("Enter the 12-digit UPI reference number."); submit(u) };
+        async function submit(utr) {
+            if (!sb) return showErr("Not connected. Check SUPABASE_KEY in shared.js.");
+            $("go").disabled = $("done").disabled = true;
+            const items = Object.entries(c).map(([i, v]) => ({ id: +i, qty: v.q }));
+            const r = await sb.rpc("place_order", { p_name: det.n, p_phone: det.p, p_addr: det.a, p_items: items, p_method: pay, p_utr: utr });
+            if (r.error) { showErr("Could not place order: " + r.error.message); $("go").disabled = $("done").disabled = false; return }
+            try { localStorage.setItem("lastOrder", JSON.stringify({ no: r.data, phone: det.p })) } catch (e) { }
+            setCart({});
+            orderPopup(r.data, pay);
+        }
+    </script>
+</body>
+
+</html>
