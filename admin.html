@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Tasteo Admin</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font:15px system-ui,sans-serif;margin:0;background:#f6f6f4;color:#1c1c1c}main{max-width:900px;margin:auto;padding:16px}input,select,button{font:inherit;padding:10px;border:1px solid #ddd;border-radius:8px}button{background:#e8472b;color:#fff;border:0;cursor:pointer}.o{background:#fff;border-radius:12px;padding:14px;margin:10px 0}.t{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.m{color:#666;font-size:13px}#er{color:#c0201a;font-weight:600;display:block;margin-top:10px}</style>
+<script>window.onerror=function(m){var x=document.getElementById("er");if(x)x.textContent="Script error: "+m}</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ===== PASTE YOUR 2 VALUES HERE (keep the quotation marks) ===== */
+var SUPABASE_URL="https://tecyopyfeillojssgvum.supabase.co";
+var SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlY3lvcHlmZWlsbG9qc3NndnVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMjI5MTcsImV4cCI6MjEwNzc5ODkxN30.6O6cHeAt2IF5rzHu78L4ZzIpC1g1UDQAUmH-RRfFLlg";
+/* =============================================================== */
+</script></head><body><main>
+<h1>Tasteo orders</h1>
+<div id="lg"><input id="em" type="email" placeholder="Admin email"> <input id="pw" type="password" placeholder="Password"> <button id="go" type="button">Log in</button><span id="er"></span></div>
+<div id="ls"></div></main>
+<script>
+var $=function(i){return document.getElementById(i)};   
+var sb=null;
+function msg(t){$("er").textContent=t}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+if(!window.supabase)msg("Supabase library did not load. Check your internet connection.");
+else if(!SUPABASE_KEY||SUPABASE_KEY.indexOf("PASTE")===0)msg("Paste your anon key in the config block at the top of this file.");
+else sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+$("go").addEventListener("click",login);
+$("pw").addEventListener("keydown",function(ev){if(ev.key==="Enter")login()});
+async function login(){
+ if(!sb)return msg("Not connected. Fix the message above first.");
+ msg("Logging in...");
+ var r=await sb.auth.signInWithPassword({email:$("em").value.trim(),password:$("pw").value});
+ if(r.error)msg("Error: "+r.error.message);else{msg("");start()}
+}
+async function start(){$("lg").style.display="none";await load();setInterval(load,15000)}
+async function load(){
+ var r=await sb.from("orders").select("*").order("created_at",{ascending:false}).limit(100);
+ if(r.error){$("ls").textContent=r.error.message;return}
+ var S=["placed","preparing","out for delivery","delivered","cancelled"];
+ $("ls").innerHTML=r.data.map(function(o){return '<div class="o"><div class="t"><b>#'+esc(o.order_no)+' · ₹'+esc(o.total)+'</b><select onchange="st(\''+esc(o.id)+'\',this.value)">'+S.map(function(s){return '<option'+(s==o.status?' selected':'')+'>'+s+'</option>'}).join("")+'</select></div><div>'+o.items.map(function(i){return esc(i.qty)+' × '+esc(i.name)}).join(", ")+'</div><div class="m">'+esc(o.customer_name)+' · '+esc(o.phone)+' · '+esc(o.address)+'</div><div class="m">'+esc(String(o.payment_method).toUpperCase())+(o.utr?' · UTR '+esc(o.utr):'')+' · '+new Date(o.created_at).toLocaleString()+'</div></div>'}).join("")||"No orders yet."
+}
+async function st(id,v){await sb.from("orders").update({status:v}).eq("id",id)}
+if(sb)sb.auth.getSession().then(function(r){if(r.data.session)start()});
+</script></body></html>

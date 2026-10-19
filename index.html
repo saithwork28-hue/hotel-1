@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Tasteo – Food delivery in Nagercoil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Order food online from the best restaurants in Nagercoil and Kanyakumari. Biryani, South Indian meals, pizza, burgers, Chinese and desserts delivered in about 30 minutes.">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fff;
+      --surf: #f6f6f4;
+      --tx: #1c1c1c;
+      --mu: #6b6b6b;
+      --bd: #e6e6e2;
+      --ac: #e8472b;
+      --ok: #1e8e4f;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    :root {
+      color-scheme: light
+    }
+
+    /* ---------- IMAGES ---------- */
+    .pic img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px
+    }
+
+    .pic.hasimg .emo,
+    .cat i.hasimg .emo {
+      display: none
+    }
+
+    .cat i {
+      position: relative;
+      overflow: hidden
+    }
+
+    .cat i img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%
+    }
+
+    .th {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex: 0 0 auto
+    }
+
+    .cover {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin: 8px 0 4px;
+      background: var(--surf)
+    }
+
+    /* ---------- BASE ---------- */
+    .qr {
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 10px 0
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    body {
+      margin: 0;
+      font: 400 15px/1.5 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--tx)
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 0;
+      color: inherit;
+      background: none
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px
+    }
+
+    header {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 5;
+      background: var(--bg);
+      border-bottom: 1px solid var(--bd)
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--bg);
+      z-index: 6
+    }
+
+    .bar {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--ac);
+      letter-spacing: -1px
+    }
+
+    .loc {
+      color: var(--mu);
+      font-size: 13px
+    }
+
+    .loc b {
+      color: var(--tx)
+    }
+
+    .sp {
+      flex: 1
+    }
+
+    .cartbtn {
+      background: var(--ac);
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-weight: 600
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: auto;
+      padding: 0 16px
+    }
+
+    .hero {
+      padding: 36px 0 20px
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 0 0 8px;
+      font-weight: 800
+    }
+
+    .hero p {
+      color: var(--mu);
+      margin: 0 0 18px
+    }
+
+    .search {
+      display: flex;
+      max-width: 560px;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surf)
+    }
+
+    .search input {
+      flex: 1;
+      border: 0;
+      background: none;
+      padding: 14px;
+      font: inherit;
+      color: inherit
+    }
+
+    .cats {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 14px 0
+    }
+
+    .cat {
+      flex: 0 0 auto;
+      text-align: center;
+      font-size: 12px;
+      color: var(--mu);
+      width: 76px
+    }
+
+    .cat i {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 4px;
+      border-radius: 50%;
+      background: var(--surf);
+      font-style: normal;
+      font-size: 30px;
+      border: 2px solid transparent
+    }
+
+    .cat.on i {
+      border-color: var(--ac)
+    }
+
+    .cat.on {
+      color: var(--tx);
+      font-weight: 600
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 6px 0 20px
+    }
+
+    .chip {
+      padding: 7px 14px;
+      border: 1px solid var(--bd);
+      border-radius: 20px;
+      font-size: 13px
+    }
+
+    .chip.on {
+      background: var(--tx);
+      color: var(--bg)
+    }
+
+    h2 {
+      font-size: 22px;
+      letter-spacing: -.5px;
+      margin: 8px 0 14px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 22px;
+      padding-bottom: 50px
+    }
+
+    .card {
+      text-align: left;
+      display: block;
+      width: 100%
+    }
+
+    .pic {
+      height: 160px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 64px;
+      position: relative
+    }
+
+    .offer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      padding: 24px 12px 8px;
+      border-radius: 0 0 16px 16px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, .75));
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      text-align: left
+    }
+
+    .card h3 {
+      margin: 8px 0 0;
+      font-size: 17px;
+      font-weight: 800
+    }
+
+    .meta {
+      color: var(--mu);
+      font-size: 13px
+    }
+
+    .rate {
+      display: inline-block;
+      background: var(--ok);
+      color: #fff;
+      border-radius: 6px;
+      padding: 0 6px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 6px
+    }
+
+    .ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 20;
+      display: none
+    }
+
+    .ov.show {
+      display: block
+    }
+
+    .panel {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: min(440px, 100%);
+      background: var(--bg);
+      overflow: auto;
+      padding: 20px;
+      padding-top: calc(20px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px))
+    }
+
+    .panel.wide {
+      width: min(560px, 100%)
+    }
+
+    .x {
+      float: right;
+      font-size: 22px;
+      color: var(--mu)
+    }
+
+    .item {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .item b {
+      display: block
+    }
+
+    .veg {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid var(--ok);
+      border-radius: 2px;
+      margin-right: 6px;
+      position: relative;
+      top: 1px
+    }
+
+    .veg.nv {
+      border-color: #b3261e
+    }
+
+    .veg::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      background: var(--ok)
+    }
+
+    .veg.nv::after {
+      background: #b3261e
+    }
+
+    .add {
+      border: 1px solid var(--ok);
+      color: var(--ok);
+      border-radius: 8px;
+      padding: 6px 20px;
+      font-weight: 800;
+      background: var(--bg)
+    }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--ok);
+      border-radius: 8px;
+      color: var(--ok);
+      font-weight: 800
+    }
+
+    .qty button {
+      padding: 5px 11px;
+      color: var(--ok);
+      font-size: 16px
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0
+    }
+
+    .tot {
+      font-weight: 800;
+      font-size: 17px;
+      border-top: 1px dashed var(--bd);
+      margin-top: 8px;
+      padding-top: 10px
+    }
+
+    .pri {
+      width: 100%;
+      background: var(--ac);
+      color: #fff;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      margin-top: 14px;
+      font-size: 16px
+    }
+
+    .pri:disabled {
+      opacity: .5
+    }
+
+    .f {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      background: var(--surf);
+      color: inherit;
+      font: inherit;
+      margin: 5px 0
+    }
+
+    .pay {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      margin: 8px 0;
+      width: 100%;
+      text-align: left
+    }
+
+    .pay.on {
+      border-color: var(--ac);
+      background: var(--surf)
+    }
+
+    .pay span {
+      font-size: 22px
+    }
+
+    .pay small {
+      display: block;
+      color: var(--mu)
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 18px 0
+    }
+
+    .steps li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      color: var(--mu)
+    }
+
+    .steps li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 13px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--bd)
+    }
+
+    .steps li.d {
+      color: var(--tx);
+      font-weight: 600
+    }
+
+    .steps li.d::before {
+      background: var(--ok);
+      border-color: var(--ok)
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--mu);
+      padding: 40px 0
+    }
+
+    footer {
+      background: var(--surf);
+      padding: 28px 16px;
+      color: var(--mu);
+      font-size: 13px;
+      text-align: center
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="bar">
+      <div class="logo">tasteo</div>
+      <div class="loc">Deliver to <b>Nagercoil, Tamil Nadu</b></div>
+      <div class="sp"></div><a href="track.html" style="color:inherit;text-decoration:none;font-weight:600">Track
+        order</a><button class="cartbtn" id="cb">Cart (0)</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Hungry? Get it delivered in 30 minutes.</h1>
+      <p>Order from the best restaurants around Nagercoil and Kanyakumari.</p>
+      <div class="search"><input id="q" placeholder="Search restaurants or dishes" aria-label="Search"></div>
+    </section>
+    <div class="cats" id="cats"></div>
+    <div class="chips" id="chips"></div>
+    <h2 id="ttl">Restaurants near you</h2>
+    <div class="grid" id="grid"></div>
+  </main>
+  <footer>Tasteo food delivery · Nagercoil</footer>
+
+  <div class="ov" id="ov">
+    <div class="panel" id="pn"></div>
+  </div>
+
+  <script>
+    /* ===== SUPABASE (anon key is public by design; keep Row Level Security ON) ===== */
+    const SUPABASE_URL = "https://tecyopyfeillojssgvum.supabase.co", SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlY3lvcHlmZWlsbG9qc3NndnVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyMjI5MTcsImV4cCI6MjEwNzc5ODkxN30.6O6cHeAt2IF5rzHu78L4ZzIpC1g1UDQAUmH-RRfFLlg";
+    /* ================================================================ */
+
+    let R = [
+      { id: 1, n: "Nagercoil Biryani House", c: ["Biryani", "North Indian"], e: "🍛", bg: "#f7c873", r: 4.5, t: 28, cost: 300, off: "20% OFF up to ₹100", veg: 0, m: [[11, "Chicken Dum Biryani", 220, 0], [12, "Mutton Biryani", 320, 0], [13, "Veg Biryani", 170, 1], [14, "Chicken 65", 180, 0], [15, "Raita", 40, 1], [16, "Chicken Lollipop", 210, 0], [17, "Egg Biryani", 160, 0], [18, "Paneer Butter Masala", 210, 1], [19, "Butter Naan", 45, 1]] },
+      { id: 2, n: "Kanyakumari Meals Corner", c: ["South Indian", "Thali"], e: "🍽️", bg: "#a8d5a2", r: 4.3, t: 25, cost: 200, off: "Free delivery", veg: 1, m: [[21, "Full Meals", 140, 1], [22, "Ghee Pongal", 90, 1], [23, "Masala Dosa", 80, 1], [24, "Filter Coffee", 30, 1], [25, "Idli (3 pcs)", 50, 1], [26, "Medu Vada (2 pcs)", 50, 1], [27, "Ghee Roast Dosa", 100, 1], [28, "Lemon Rice", 70, 1], [29, "Payasam", 60, 1]] },
+      { id: 3, n: "Pizza Junction", c: ["Pizza", "Fast Food"], e: "🍕", bg: "#f2a48f", r: 4.1, t: 35, cost: 400, off: "₹125 OFF above ₹499", veg: 0, m: [[31, "Margherita Pizza", 229, 1], [32, "Peppy Paneer Pizza", 329, 1], [33, "Chicken Tikka Pizza", 349, 0], [34, "Garlic Bread", 119, 1], [35, "Farmhouse Pizza", 299, 1], [36, "Pepperoni Pizza", 379, 0], [37, "Cheesy Pasta", 189, 1], [38, "Choco Lava Cake", 99, 1]] },
+      { id: 4, n: "Burger Barn", c: ["Burgers", "Fast Food"], e: "🍔", bg: "#e9c46a", r: 4.2, t: 22, cost: 250, off: "40% OFF up to ₹80", veg: 0, m: [[41, "Classic Veg Burger", 109, 1], [42, "Crispy Chicken Burger", 159, 0], [43, "Peri Peri Fries", 89, 1], [44, "Chocolate Shake", 119, 1], [45, "Paneer Burger", 139, 1], [46, "Double Chicken Burger", 209, 0], [47, "Onion Rings", 99, 1], [48, "Chicken Nuggets (6)", 149, 0]] },
+      { id: 5, n: "Dragon Wok", c: ["Chinese"], e: "🥡", bg: "#c9b6e4", r: 4, t: 32, cost: 350, off: "Items at ₹99", veg: 0, m: [[51, "Veg Hakka Noodles", 150, 1], [52, "Chicken Fried Rice", 180, 0], [53, "Chilli Paneer", 190, 1], [54, "Chicken Manchurian", 200, 0], [55, "Veg Spring Rolls", 130, 1], [56, "Schezwan Noodles", 160, 1], [57, "Chicken Lollipop", 210, 0], [58, "Hot and Sour Soup", 90, 1]] },
+      { id: 6, n: "Sweet Tooth Bakes", c: ["Desserts", "Bakery"], e: "🍰", bg: "#f4b6c2", r: 4.6, t: 20, cost: 200, off: "Buy 1 Get 1", veg: 1, m: [[61, "Chocolate Truffle Slice", 120, 1], [62, "Red Velvet Cupcake", 70, 1], [63, "Gulab Jamun (4 pcs)", 80, 1], [64, "Blueberry Cheesecake", 160, 1], [65, "Brownie with Ice Cream", 140, 1], [66, "Fruit Cream Cake (500g)", 450, 1]] }];
+    const CATS = [["All", "✨"], ["Biryani", "🍛"], ["South Indian", "🥞"], ["Pizza", "🍕"], ["Burgers", "🍔"], ["Chinese", "🥡"], ["Desserts", "🍰"]];
+
+    /* ================= IMAGES =================
+       Put your photos in these folders (file name = id, .jpg):
+         images/restaurants/1.jpg ... 6.jpg
+         images/dishes/11.jpg, 12.jpg ... 66.jpg
+         images/categories/all.jpg, biryani.jpg, south-indian.jpg, pizza.jpg, burgers.jpg, chinese.jpg, desserts.jpg
+       Want a different file name? Add it below, for example:  IMGR = { 1: "images/my-biryani-house.webp" }
+       If an image is missing, the emoji shows instead, so nothing breaks. */
+  const IMGR = { 1:"images/biriyani.jpg", 2:"images/meals.jpg", 3:"images/pizza.jpg", 4:"images/burger.jpg", 5:"images/juice.jpg", 6:"images/cakes.jpg" };
+const IMGD = { 11:"images/biriyani.jpg", 21:"images/meals.jpg", 31:"images/pizza.jpg", 41:"images/burger.jpg", 61:"images/cakes.jpg" };
+const IMGC = { "Biryani":"images/biriyani.jpg", "South Indian":"images/meals.jpg", "Pizza":"images/pizza.jpg", "Burgers":"images/burger.jpg", "Chinese":"images/juice.jpg", "Desserts":"images/cakes.jpg" };
+    const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const imgR = id => IMGR[id] || `images/restaurants/${id}.jpg`;
+    const imgD = id => IMGD[id] || `images/dishes/${id}.jpg`;
+    const imgC = n => IMGC[n] || `images/categories/${slug(n)}.jpg`;
+    const esc = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+    const OK = `onload="this.parentNode.classList.add('hasimg')" onerror="this.remove()"`;
+    /* ========================================= */
+
+    const UPI_ID = "saithanwar65-1@oksbi", STORE = "Tasteo"; /* <-- replace with your real UPI ID before taking real payments */
+
+    let cat = "All", flt = new Set(), cart = {}, cur = null, pay = "upi", $ = s => document.querySelector(s);
+    let all = R.flatMap(r => r.m.map(m => ({ id: m[0], n: m[1], p: m[2], v: m[3], r: r.id })));
+    try { cart = JSON.parse(localStorage.getItem("tc") || "{}") } catch (e) { }
+    const save = () => { try { localStorage.setItem("tc", JSON.stringify(cart)); localStorage.setItem("tcd", JSON.stringify(Object.fromEntries(Object.entries(cart).filter(([i]) => dish(i)).map(([i, q]) => [i, { n: dish(i).n, p: dish(i).p, q }])))) } catch (e) { } };
+    const dish = id => all.find(d => d.id == id), inr = n => "₹" + n;
+    const count = () => Object.values(cart).reduce((a, b) => a + b, 0), sub = () => Object.entries(cart).reduce((s, [i, q]) => s + dish(i).p * q, 0);
+
+    function render() {
+      $("#cats").innerHTML = CATS.map(c => `<button class="cat ${cat == c[0] ? "on" : ""}" data-c="${c[0]}"><i><span class="emo">${c[1]}</span><img src="${imgC(c[0])}" alt="${esc(c[0])}" loading="lazy" ${OK}></i>${c[0]}</button>`).join("");
+      const F = [["veg", "Pure veg"], ["fast", "Fast delivery"], ["top", "Rating 4.3+"]];
+      $("#chips").innerHTML = F.map(f => `<button class="chip ${flt.has(f[0]) ? "on" : ""}" data-f="${f[0]}">${f[1]}</button>`).join("");
+      const q = $("#q").value.toLowerCase();
+      const L = R.filter(r => (cat == "All" || r.c.includes(cat)) && (!flt.has("veg") || r.veg) && (!flt.has("fast") || r.t <= 25) && (!flt.has("top") || r.r >= 4.3) && (!q || (r.n + r.c + r.m.map(m => m[1])).toLowerCase().includes(q)));
+      $("#ttl").textContent = L.length + " restaurants near you";
+      $("#grid").innerHTML = L.length ? L.map(r => `<button class="card" data-r="${r.id}"><div class="pic" style="background:${r.bg}"><span class="emo">${r.e}</span><img src="${imgR(r.id)}" alt="${esc(r.n)}" loading="lazy" ${OK}><div class="offer">${r.off}</div></div><h3>${r.n}</h3><div class="meta"><span class="rate">★ ${r.r}</span>${r.t} mins · ${inr(r.cost)} for two</div><div class="meta">${r.c.join(", ")}</div></button>`).join("") : `<div class="empty">No matches. Try a different dish or clear the filters.</div>`;
+      $("#cb").textContent = "Cart (" + count() + ")"; save();
+    }
+    function open_(h, w) { $("#pn").className = "panel" + (w ? " wide" : ""); $("#pn").innerHTML = h; $("#ov").classList.add("show") }
+    function close_() { $("#ov").classList.remove("show") }
+    function ctl(id) { const q = cart[id] || 0; return q ? `<div class="qty"><button data-m="${id}">−</button>${q}<button data-p="${id}">+</button></div>` : `<button class="add" data-p="${id}">ADD</button>` }
+    function menu(id) {
+      cur = R.find(r => r.id == id);
+      open_(`<button class="x" data-x aria-label="Close">×</button><h2>${cur.n}</h2><img class="cover" src="${imgR(cur.id)}" alt="${esc(cur.n)}" onerror="this.remove()"><div class="meta"><span class="rate">★ ${cur.r}</span>${cur.t} mins · ${cur.c.join(", ")}</div>` + cur.m.map(m => `<div class="item"><img class="th" src="${imgD(m[0])}" alt="${esc(m[1])}" loading="lazy" onerror="this.remove()"><div style="flex:1"><b><span class="veg ${m[3] ? "" : "nv"}"></span>${m[1]}</b>${inr(m[2])}</div>${ctl(m[0])}</div>`).join(""))
+    }
+    function cartView() {
+      const ids = Object.keys(cart).filter(i => cart[i]);
+      if (!ids.length) return open_(`<button class="x" data-x>×</button><h2>Your cart</h2><div class="empty">Your cart is empty.<br>Add dishes from a restaurant to get started.</div>`);
+      const s = sub(), d = s >= 300 ? 0 : 40, g = Math.round(s * .05);
+      open_(`<button class="x" data-x>×</button><h2>Your cart</h2>` + ids.map(i => `<div class="item"><img class="th" src="${imgD(i)}" alt="${esc(dish(i).n)}" onerror="this.remove()"><div style="flex:1"><b>${dish(i).n}</b>${inr(dish(i).p * cart[i])}</div>${ctl(i)}</div>`).join("") +
+        `<div style="margin-top:14px"><div class="row"><span>Item total</span><span>${inr(s)}</span></div><div class="row"><span>Delivery fee</span><span>${d ? inr(d) : "FREE"}</span></div><div class="row"><span>GST and charges</span><span>${inr(g)}</span></div><div class="row tot"><span>To pay</span><span>${inr(s + d + g)}</span></div></div><button class="pri" data-co>Proceed to checkout</button>`);
+    }
+    function checkout() {
+      const s = sub(), d = s >= 300 ? 0 : 40, T = s + d + Math.round(s * .05);
+      const P = [["upi", "📱", "UPI", "Google Pay, PhonePe, Paytm"], ["card", "💳", "Credit / Debit card", "Visa, Mastercard, RuPay"], ["nb", "🏦", "Net banking", "All major banks"], ["cod", "💵", "Cash on delivery", "Pay when it arrives"]];
+      open_(`<button class="x" data-x>×</button><h2>Checkout</h2><b>Delivery address</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad" placeholder="House no, street, area, Nagercoil"><b style="display:block;margin-top:14px">Payment method</b>` +
+        P.map(p => `<button class="pay ${pay == p[0] ? "on" : ""}" data-pay="${p[0]}"><span>${p[1]}</span><div><b>${p[2]}</b><small>${p[3]}</small></div></button>`).join("") +
+        `<div id="pf"></div><div id="er" style="color:var(--ac);font-size:13px"></div><button class="pri" data-place>Pay ${inr(T)}</button>`, 1); payForm();
+    }
+    function payForm() {
+      const f = $("#pf"); if (!f) return;
+      f.innerHTML = pay == "upi" ? `<input class="f" id="u" placeholder="Enter UPI ID (name@bank)">` : pay == "card" ? `<input class="f" id="cn" inputmode="numeric" maxlength="19" placeholder="Card number"><div style="display:flex;gap:8px"><input class="f" placeholder="MM/YY" maxlength="5"><input class="f" placeholder="CVV" maxlength="3" type="password"></div>` : pay == "nb" ? `<select class="f"><option>State Bank of India</option><option>HDFC Bank</option><option>ICICI Bank</option><option>Indian Bank</option></select>` : "";
+    }
+    function place() {
+      const ph = $("#ph").value, ok = $("#nm").value.trim() && /^[6-9]\d{9}$/.test(ph) && $("#ad").value.trim();
+      if (!ok) { $("#er").textContent = "Enter your name, a valid 10-digit mobile number and an address."; return }
+      if (pay == "upi" && !/^[\w.\-]+@[\w]+$/.test($("#u").value)) { $("#er").textContent = "Enter a valid UPI ID, like name@okhdfc."; return }
+      if (pay == "card" && $("#cn").value.replace(/\s/g, "").length < 15) { $("#er").textContent = "Enter a valid card number."; return }
+      cust = { n: $("#nm").value.trim(), p: ph, a: $("#ad").value.trim() }; if (pay == "upi") return upiScreen(); const b = $("[data-place]"); b.disabled = 1; b.textContent = "Placing order…";
+      setTimeout(() => {
+        const id = Math.floor(100000 + Math.random() * 900000); saveOrder(id, pay, pay == "upi" ? $("#utr").value : null); cart = {}; render();
+        open_(`<button class="x" data-x>×</button><h2 style="color:var(--ok)">Order placed!</h2><p class="meta">Order #${id} · ${pay == "cod" ? "Pay on delivery" : "Payment received"} · Arriving in about 30 mins</p><ul class="steps" id="st"><li class="d">Order confirmed</li><li>Restaurant is preparing your food</li><li>Out for delivery</li><li>Delivered</li></ul><button class="pri" data-x>Back to restaurants</button>`);
+        [...document.querySelectorAll("#st li")].forEach((l, i) => i && setTimeout(() => l.classList.add("d"), i * 3500));
+      }, 1600);
+    }
+    const total = () => { const s = sub(); return s + (s >= 300 ? 0 : 40) + Math.round(s * .05) };
+    function upiScreen() {
+      const T = total(), oid = "TS" + Date.now().toString().slice(-6), link = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(STORE)}&am=${T}&cu=INR&tn=${oid}`;
+      open_(`<button class="x" data-x>×</button><h2>Pay ₹${T} with UPI</h2><p class="meta">On mobile, tap the button to open GPay, PhonePe or Paytm. On desktop, scan the QR code with any UPI app.</p><div class="qr" id="qr"></div><a class="pri" style="display:block;text-align:center;text-decoration:none" href="${link}">Pay with UPI app</a><p class="meta" style="margin-top:14px">After paying, enter the 12-digit UPI reference (UTR) from your app.</p><input class="f" id="utr" inputmode="numeric" maxlength="12" placeholder="12-digit UPI reference number"><div id="er" style="color:var(--ac);font-size:13px"></div><button class="pri" data-upidone>I have paid</button>`, 1);
+      try { new QRCode($("#qr"), { text: link, width: 190, height: 190 }) } catch (e) { $("#qr").textContent = "QR unavailable. Use the button above." }
+    }
+    function upiDone() {
+      if (!/^\d{12}$/.test($("#utr").value)) { $("#er").textContent = "Enter the 12-digit UPI reference number."; return }
+      const id = Math.floor(100000 + Math.random() * 900000); saveOrder(id, pay, pay == "upi" ? $("#utr").value : null); cart = {}; render();
+      open_(`<button class="x" data-x>×</button><h2 style="color:var(--ok)">Order placed!</h2><p class="meta">Order #${id} · UPI payment submitted · Arriving in about 30 mins</p><ul class="steps" id="st"><li class="d">Order confirmed</li><li>Restaurant is preparing your food</li><li>Out for delivery</li><li>Delivered</li></ul><button class="pri" data-x>Back to restaurants</button>`);
+      [...document.querySelectorAll("#st li")].forEach((l, i) => i && setTimeout(() => l.classList.add("d"), i * 3500))
+    }
+    document.addEventListener("click", e => {
+      const t = e.target.closest("button,.ov"); if (!t) return; const D = t.dataset || {};
+      if (t.classList.contains("ov") && e.target === t) return close_();
+      if (D.c) { cat = D.c; render() } else if (D.f) { flt.has(D.f) ? flt.delete(D.f) : flt.add(D.f); render() }
+      else if (D.r) menu(D.r);
+      else if (D.p !== undefined) { cart[D.p] = (cart[D.p] || 0) + 1; render(); $("#pn").querySelector(".x").nextElementSibling.textContent == "Your cart" ? cartView() : cur && menu(cur.id) }
+      else if (D.m !== undefined) { cart[D.m]--; if (!cart[D.m]) delete cart[D.m]; render(); $("#pn").querySelector("h2").textContent == "Your cart" ? cartView() : cur && menu(cur.id) }
+      else if (t.id == "cb") location.href = "cart.html"; else if (D.co !== undefined) checkout();
+      else if (D.pay) { pay = D.pay; document.querySelectorAll(".pay").forEach(b => b.classList.toggle("on", b.dataset.pay == pay)); payForm() } else if (D.place !== undefined) place();
+      else if (D.upidone !== undefined) upiDone();
+      else if (D.x !== undefined) close_();
+    });
+    $("#q").addEventListener("input", render); render();
+
+    // ---- Supabase: orders + live restaurants/menu (image_url columns override the image folders) ----
+    let cust = {}; const sb = (SUPABASE_KEY && window.supabase) ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    async function saveOrder(no, method, utr) { if (!sb) return; try { const items = Object.entries(cart).map(([i, q]) => ({ id: +i, name: dish(i).n, qty: q, price: dish(i).p })); const { error } = await sb.from("orders").insert({ order_no: String(no), customer_name: cust.n, phone: cust.p, address: cust.a, items, total: total(), payment_method: method, utr, status: "placed" }); if (error) console.error(error) } catch (e) { console.error(e) } }
+    async function load() {
+      if (!sb) return; try {
+        const [a, b] = await Promise.all([sb.from("restaurants").select("*").order("id"), sb.from("menu_items").select("*").eq("available", true).order("id")]); const rs = a.data, ms = b.data; if (!rs || !rs.length) return;
+        R = rs.map(r => ({ id: r.id, n: r.name, c: r.cuisines, e: r.emoji, bg: r.bg, r: +r.rating, t: r.eta, cost: r.cost_for_two, off: r.offer, veg: r.is_veg ? 1 : 0, m: ms.filter(m => m.restaurant_id == r.id).map(m => [m.id, m.name, m.price, m.is_veg ? 1 : 0]) }));
+        all = R.flatMap(r => r.m.map(m => ({ id: m[0], n: m[1], p: m[2], v: m[3], r: r.id })));
+        rs.forEach(r => r.image_url && (IMGR[r.id] = r.image_url)); ms.forEach(m => m.image_url && (IMGD[m.id] = m.image_url));
+        Object.keys(cart).forEach(i => { if (!dish(i)) delete cart[i] }); render()
+      } catch (e) { console.error(e) }
+    }
+    load();
+  </script>
+</body>
+
+</html>

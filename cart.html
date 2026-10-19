@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Your cart · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<header><a class="logo" href="index.html">tasteo</a><a href="cart.html">Cart</a><a href="track.html">Track order</a></header>
+<main><h1>Your cart</h1><div id="box"></div></main>
+<script src="shared.js"></script><script>
+function draw(){const c=getCart(),ids=Object.keys(c);
+ if(!ids.length){$("box").innerHTML='<div class="empty">Your cart is empty.<a class="btn" href="index.html">Browse restaurants</a></div>';return}
+ const b=bill(c);
+ $("box").innerHTML=ids.map(i=>`<div class="item"><div><b>${esc(c[i].n)}</b>${inr(c[i].p*c[i].q)}</div><div class="qty"><button data-m="${i}">−</button>${c[i].q}<button data-p="${i}">+</button></div></div>`).join("")+
+ `<div style="margin-top:14px"><div class="row"><span>Item total</span><span>${inr(b.s)}</span></div><div class="row"><span>Delivery fee</span><span>${b.d?inr(b.d):"FREE"}</span></div><div class="row"><span>GST and charges</span><span>${inr(b.g)}</span></div><div class="row tot"><span>To pay</span><span>${inr(b.t)}</span></div></div><a class="btn" href="checkout.html">Proceed to payment</a><p class="m">Free delivery above ₹300.</p>`}
+document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const c=getCart(),d=t.dataset;
+ if(d.p&&c[d.p])c[d.p].q++;else if(d.m&&c[d.m]){c[d.m].q--;if(c[d.m].q<1)delete c[d.m]}else return;setCart(c);draw()});
+draw();
+</script></body></html>
