@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Sign in · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
+<header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
+<main><h1 id="h">Sign in</h1>
+<div id="out"><div style="display:flex;gap:8px"><button class="pay on" id="t1">Sign in</button><button class="pay" id="t2">Create account</button></div>
+<div id="su" hidden><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
+<input class="f" id="em" type="email" placeholder="Email"><input class="f" id="pw" type="password" placeholder="Password (at least 6 characters)">
+<div id="er" class="err"></div><button class="btn" id="go">Sign in</button></div>
+<div id="in" hidden><p id="who" class="m"></p><a class="btn" href="my-orders.html">My orders</a><button class="btn" id="so" style="background:#6b6b6b">Sign out</button></div></main>
+<script src="shared.js"></script><script>
+let mode="in";const q=new URLSearchParams(location.search).get("next");
+const next=["checkout.html","cart.html","my-orders.html","index.html","track.html"].includes(q)?q:"index.html";
+function tab(m){mode=m;$("su").hidden=m=="in";$("t1").classList.toggle("on",m=="in");$("t2").classList.toggle("on",m=="up");$("go").textContent=m=="in"?"Sign in":"Create account";$("er").textContent=""}
+$("t1").onclick=()=>tab("in");$("t2").onclick=()=>tab("up");
+$("go").onclick=async()=>{if(!sb)return $("er").textContent="Not connected. Check SUPABASE_KEY in shared.js.";
+ const email=$("em").value.trim(),pw=$("pw").value;
+ if(!email||pw.length<6)return $("er").textContent="Enter your email and a password of at least 6 characters.";
+ let r;
+ if(mode=="up"){const n=$("nm").value.trim(),p=$("ph").value.trim();
+  if(n.length<2||!/^[6-9]\d{9}$/.test(p))return $("er").textContent="Enter your name and a valid 10-digit mobile number.";
+  $("go").disabled=true;r=await sb.auth.signUp({email,password:pw,options:{data:{name:n,phone:p}}});
+  if(!r.error&&!r.data.session){$("go").disabled=false;return $("er").textContent="Account created. Check your email to confirm it, then sign in."}}
+ else{$("go").disabled=true;r=await sb.auth.signInWithPassword({email,password:pw})}
+ $("go").disabled=false;if(r.error)return $("er").textContent=r.error.message;location.href=next};
+if(sb)sb.auth.getSession().then(({data})=>{const s=data.session;if(!s)return;if(q)return location.href=next;
+ $("out").hidden=true;$("in").hidden=false;$("h").textContent="Your account";$("who").textContent=((s.user.user_metadata||{}).name||"")+" · "+s.user.email});
+$("so").onclick=async()=>{await sb.auth.signOut();location.reload()};
+</script></body></html>
