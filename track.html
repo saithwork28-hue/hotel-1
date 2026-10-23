@@ -1,23 +1,35 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Track order · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Track order · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
-<header><a class="logo" href="index.html">tasteo</a><a href="cart.html">Cart</a><a href="track.html">Track order</a></header>
+<header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Track your order</h1>
-<input class="f" id="no" inputmode="numeric" placeholder="Order number"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="Mobile number used for the order"><button class="btn" id="go">Track order</button><div id="er" class="err"></div><div id="res"></div></main>
-<script src="shared.js"></script><script>
+<input class="f" id="no" inputmode="numeric" placeholder="Order number">
+<input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="Mobile number used for the order">
+<button class="btn" id="go">Track order</button><div id="er" class="err"></div><div id="res"></div></main>
+
+<div class="pop" id="pop"><div class="box"><div class="tick">✓</div><h2>Order placed!</h2><p class="m" id="pm"></p>
+<button class="btn" id="pc">Track my order</button><a class="btn alt" href="index.html">Back to restaurants</a></div></div>
+
+<script src="shared.js"></script>
+<script>
 const S=[["placed","Order placed"],["preparing","Restaurant is preparing your food"],["out for delivery","Out for delivery"],["delivered","Delivered"]];
-let cur=null,tm=null;
-async function look(){const no=$("no").value.trim(),ph=$("ph").value.trim();cur=null;$("er").textContent="";
+let cur=null,tm=null,fresh=(document.referrer||"").indexOf("checkout.html")>-1;
+async function look(){
+ const no=$("no").value.trim(),ph=$("ph").value.trim();cur=null;$("er").textContent="";
  if(!sb)return $("er").textContent="Not connected. Check SUPABASE_KEY in shared.js.";
  if(!no||!/^[6-9]\d{9}$/.test(ph))return $("er").textContent="Enter your order number and 10-digit mobile number.";
  const r=await sb.rpc("track_order",{p_no:no,p_phone:ph});
  if(r.error||!r.data||!r.data.length){$("res").innerHTML="";return $("er").textContent="No order found. Check the order number and mobile number."}
- cur={no,ph};show(r.data[0]);clearInterval(tm);tm=setInterval(refresh,10000)}
+ cur={no,ph};show(r.data[0]);clearInterval(tm);tm=setInterval(refresh,10000);
+ if(fresh){fresh=false;$("pm").textContent="Order #"+r.data[0].order_no+" · Total "+inr(r.data[0].total);$("pop").classList.add("show")}}
 async function refresh(){if(!cur)return;const r=await sb.rpc("track_order",{p_no:cur.no,p_phone:cur.ph});if(r.data&&r.data.length)show(r.data[0])}
-function show(o){const k=S.findIndex(s=>s[0]==o.status);
+function show(o){
+ const k=S.findIndex(s=>s[0]==o.status);
  const st=o.status=="cancelled"?'<div class="cx">This order was cancelled. Please call the restaurant if you have questions.</div>':
  '<ul class="steps">'+S.map((s,i)=>`<li class="${i<=k?"d":""} ${i==k?"now":""}">${s[1]}</li>`).join("")+'</ul>';
  $("res").innerHTML=`<h2 style="margin:18px 0 0">Order #${esc(o.order_no)}</h2><div class="m">${new Date(o.created_at).toLocaleString()} · ${esc(String(o.payment_method).toUpperCase())}</div>${st}`+
  o.items.map(i=>`<div class="row"><span>${esc(i.qty)} × ${esc(i.name)}</span><span>${inr(i.qty*i.price)}</span></div>`).join("")+`<div class="row tot"><span>Total</span><span>${inr(o.total)}</span></div>`}
 $("go").onclick=look;
+$("pc").onclick=()=>$("pop").classList.remove("show");
 try{const l=JSON.parse(localStorage.getItem("lastOrder")||"null");if(l){$("no").value=l.no;$("ph").value=l.phone;look()}}catch(e){}
 </script></body></html>
