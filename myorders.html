@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>My orders · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
+<header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
+<main><h1>My orders</h1><div id="ls" class="m">Loading...</div></main>
+<script src="shared.js"></script><script>
+const L={placed:"Order placed",preparing:"Preparing",["out for delivery"]:"Out for delivery",delivered:"Delivered",cancelled:"Cancelled"};
+(async()=>{if(!sb)return $("ls").textContent="Not connected. Check SUPABASE_KEY in shared.js.";
+ const{data:{session}}=await sb.auth.getSession();if(!session)return location.href="login.html?next=my-orders.html";
+ const r=await sb.from("orders").select("order_no,status,items,total,payment_method,created_at,phone").order("created_at",{ascending:false}).limit(50);
+ if(r.error)return $("ls").textContent=r.error.message;
+ $("ls").innerHTML=r.data.map(o=>`<div class="item" style="display:block"><div class="row"><b>Order #${esc(o.order_no)}</b><b style="color:${o.status=="cancelled"?"#c0201a":o.status=="delivered"?"#1e8e4f":"#e8472b"}">${esc(L[o.status]||o.status)}</b></div><div>${o.items.map(i=>esc(i.qty)+" × "+esc(i.name)).join(", ")}</div><div class="row m"><span>${new Date(o.created_at).toLocaleString()} · ${esc(String(o.payment_method).toUpperCase())}</span><span>${inr(o.total)}</span></div><a href="track.html" data-no="${esc(o.order_no)}" data-ph="${esc(o.phone)}">Track this order</a></div>`).join("")||'<div class="empty">No orders yet.<a class="btn" href="index.html">Order food</a></div>'})();
+document.addEventListener("click",e=>{const a=e.target.closest("a[data-no]");if(a)try{localStorage.setItem("lastOrder",JSON.stringify({no:a.dataset.no,phone:a.dataset.ph}))}catch(x){}});
+</script></body></html>
