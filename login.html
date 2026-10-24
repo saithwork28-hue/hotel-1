@@ -25,7 +25,7 @@ background:radial-gradient(600px 420px at 12% 18%,rgba(255,178,120,.45),transpar
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <div class="stage">
 <img class="fl f1" src="images/biriyani.jpg" alt="" onerror="this.remove()"><img class="fl f2" src="images/pizza.jpg" alt="" onerror="this.remove()"><img class="fl f3" src="images/burger.jpg" alt="" onerror="this.remove()"><img class="fl f4" src="images/cakes.jpg" alt="" onerror="this.remove()">
-<main class="glass"><div class="eyebrow">Anwar Foods</div><h1 id="h">Sign in</h1><p class="sub">Welcome back. Your next meal is a few taps away.</p>
+<main class="glass"><div class="eyebrow">Anwar Foods</div><h1 id="h">Sign in</h1><p class="sub" id="sub">Welcome back. Your next meal is a few taps away.</p>
 <div id="out"><div class="seg"><button class="on" id="t1">Sign in</button><button id="t2">Create account</button></div>
 <div id="su" hidden><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
 <input class="f" id="em" type="email" placeholder="Email"><input class="f" id="pw" type="password" placeholder="Password (at least 6 characters)">
@@ -48,5 +48,6 @@ $("go").onclick=async()=>{if(!sb)return $("er").textContent="Not connected. Chec
  $("go").disabled=false;if(r.error)return $("er").textContent=r.error.message;location.href=next};
 if(sb)sb.auth.getSession().then(({data})=>{const s=data.session;if(!s)return;if(q)return location.href=next;
  $("out").hidden=true;$("in").hidden=false;$("h").textContent="Your account";$("who").textContent=((s.user.user_metadata||{}).name||"")+" · "+s.user.email});
+if(q==="checkout.html")$("sub").textContent="Please sign in or create an account to place your order. Your cart is saved.";
 $("so").onclick=async()=>{await sb.auth.signOut();try{["tc","tcd","lastOrder"].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
 </script></body></html>
