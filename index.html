@@ -111,7 +111,7 @@ const CATS=[["All","✨"],["Biryani","🍛"],["South Indian","🥞"],["Pizza","�
 /* ===== IMAGES: your photos are in the images/ folder. Missing photo = emoji shows instead. ===== */
 const IMGR={1:"images/biriyani.jpg",2:"images/meals.jpg",3:"images/pizza.jpg",4:"images/burger.jpg",5:"images/juice.jpg",6:"images/cakes.jpg"};
 const IMGD={11:"images/biriyani.jpg",21:"images/meals.jpg",31:"images/pizza.jpg",41:"images/burger.jpg",61:"images/cakes.jpg"};
-const IMGC={"Biryani":"images/biriyani.jpg","South Indian":"images/meals.jpg","Pizza":"images/pizza.jpg","Burgers":"images/burger.jpg","Chinese":"images/juice.jpg","Desserts":"images/cakes.jpg"};
+const IMGC={"All":"images/meals.jpg","Biryani":"images/biriyani.jpg","South Indian":"images/meals.jpg","Pizza":"images/pizza.jpg","Burgers":"images/burger.jpg","Chinese":"images/juice.jpg","Desserts":"images/cakes.jpg"};
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const imgR=id=>IMGR[id]||`images/restaurants/${id}.jpg`,imgD=id=>IMGD[id]||`images/dishes/${id}.jpg`,imgC=n=>IMGC[n]||`images/categories/${slug(n)}.jpg`;
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
