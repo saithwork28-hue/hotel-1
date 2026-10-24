@@ -18,7 +18,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .logo{font-weight:800;font-size:24px;color:var(--ac);letter-spacing:-1px}
 .loc{color:var(--mu);font-size:13px}.loc b{color:var(--tx)}.sp{flex:1}
 .hl{background:var(--ac);color:#fff;padding:9px 16px;border-radius:10px;text-decoration:none;font-weight:600}
-@media(max-width:600px){.loc{display:none}.bar{gap:8px;padding:10px 12px}.hl,.cartbtn{padding:7px 11px;font-size:13px}.logo{font-size:20px}}
+@media(max-width:600px){header{position:static}.loc,.sp{display:none}.bar{flex-wrap:wrap;gap:8px;padding:10px 12px}.logo{flex:0 0 100%;font-size:22px;white-space:nowrap}.hl,.cartbtn{flex:1 1 0;text-align:center;white-space:nowrap;padding:9px 6px;font-size:13px}.search input{font-size:16px}}
 .cartbtn{background:var(--ac);color:#fff;padding:9px 16px;border-radius:10px;font-weight:600}
 .wrap{max-width:1100px;margin:auto;padding:0 16px}
 .hero{padding:36px 0 20px}
@@ -58,13 +58,17 @@ h2{font-size:22px;letter-spacing:-.5px;margin:8px 0 14px}
 .qty button{padding:5px 11px;color:var(--ok);font-size:16px}
 .empty{text-align:center;color:var(--mu);padding:40px 0}
 /* "Added to cart" popup */
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160px);background:#1c1c1c;color:#fff;padding:12px 14px 12px 18px;border-radius:14px;display:flex;gap:14px;align-items:center;z-index:40;transition:transform .3s;max-width:92vw;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160px);background:#1c1c1c;color:#fff;padding:12px 14px 12px 18px;border-radius:14px;display:flex;gap:14px;align-items:center;z-index:40;transition:transform .3s;width:max-content;max-width:calc(100vw - 24px);font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25)}
 .toast.show{transform:translate(-50%,0)}
 .toast a{background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;font-weight:800;text-decoration:none;white-space:nowrap}
 footer{background:var(--surf);padding:28px 16px;color:var(--mu);font-size:13px;text-align:center}
+@media(max-width:600px){.toast{left:12px;right:12px;width:auto;max-width:none;transform:translateY(160px);justify-content:space-between}.toast.show{transform:translateY(0)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/5628c95fb657fd6b1c740bf7d/6fe975f2a18feeb8a9476c3b0.js");</script>
+<link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://saithwork28-hue.github.io/hotel-1/">
+<meta property="og:type" content="website"><meta property="og:title" content="Anwar Foods – Food delivery in Nagercoil"><meta property="og:description" content="Order biryani, meals, pizza, burgers, Chinese and desserts online in Nagercoil and Kanyakumari."><meta property="og:url" content="https://saithwork28-hue.github.io/hotel-1/"><meta property="og:image" content="https://saithwork28-hue.github.io/hotel-1/logo-512.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Anwar Foods","url":"https://saithwork28-hue.github.io/hotel-1/"}</script>
 </head>
 <body>
 <header><div class="bar">
