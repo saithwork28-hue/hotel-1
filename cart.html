@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Your cart · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
+<html lang="en"><head><meta charset="utf-8"><title>Your cart · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><style>
+.notice{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border:1px solid #f5dcc3;background:#fff8f0;border-radius:14px}
+.notice svg{flex:0 0 20px;margin-top:2px;color:#e8472b}
+.notice b{display:block;font-size:14px;font-weight:700;color:#1c1c1c;letter-spacing:.1px}
+.notice span{display:block;font-size:13px;line-height:1.5;color:#6b5648;font-weight:400}
+</style></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="index.html">Home</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Your cart</h1><div id="box"></div></main>
 <script src="shared.js"></script>
 <script>
 let signedIn=null;
-const cta=()=>signedIn===null?'<button class="btn" disabled>Checking sign-in...</button>':signedIn?'<a class="btn" href="checkout.html">Proceed to payment</a>':'<div style="background:#fff4e5;border:1px solid #ffd9a8;color:#8a4b00;padding:12px 14px;border-radius:12px;margin-top:14px;font-weight:600">🔒 Please sign in to place your order. Your cart will be saved.</div><a class="btn" href="login.html?next=checkout.html">Sign in to continue</a>';
+const cta=()=>signedIn===null?'<button class="btn" disabled>Checking sign-in...</button>':signedIn?'<a class="btn" href="checkout.html">Proceed to payment</a>':'<div class="notice"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><div><b>Sign in required</b><span>Please sign in to place your order. Your cart will be saved.</span></div></div><a class="btn" href="login.html?next=checkout.html">Sign in to continue</a>';
 function draw(){
  const c=getCart(),ids=Object.keys(c);
  if(!ids.length){$("box").innerHTML='<div class="empty">Your cart is empty.<a class="btn" href="index.html">Browse restaurants</a></div>';return}
