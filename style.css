@@ -83,3 +83,15 @@ main h1{text-align:center;font-family:'Playfair Display',Georgia,serif;font-styl
 }
 @keyframes fl{50%{transform:translateY(-14px)}}
 @media(prefers-reduced-motion:reduce){body::before,body::after{animation:none}}
+
+/* ========== MOBILE FIXES ========== */
+html{-webkit-text-size-adjust:100%}
+.f{font-size:16px}
+.toast{width:max-content;max-width:calc(100vw - 24px)}
+@media(max-width:560px){
+ header{position:static;gap:8px}
+ .logo{flex:0 0 100%;margin-right:0;white-space:nowrap}
+ header a:not(.logo){flex:1 1 auto;text-align:center;white-space:nowrap;padding:9px 8px;font-size:13px}
+ .toast{left:12px;right:12px;width:auto;max-width:none;transform:translateY(160px);justify-content:space-between}
+ .toast.show{transform:translateY(0)}
+}
