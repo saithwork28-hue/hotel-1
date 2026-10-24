@@ -3,7 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Payment</h1><div id="sum" class="m"></div>
-<div id="s1"><b>Delivery details</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad" placeholder="House no, street, area, Nagercoil">
+<div id="s1"><b>Delivery details</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad" placeholder="House no, street, area, Nagercoil"><button type="button" class="pay" id="loc" style="justify-content:center;font-weight:700;color:#e8472b">📍 Use my current location</button><div id="lm" class="m"></div>
 <b style="display:block;margin-top:14px">Payment method</b>
 <button class="pay on" data-pay="upi"><span>📱</span><div><b>UPI</b><small>GPay, PhonePe, Paytm</small></div></button>
 <button class="pay" data-pay="cod"><span>💵</span><div><b>Cash on delivery</b><small>Pay when it arrives</small></div></button>
@@ -32,4 +32,13 @@ async function submit(utr){if(!sb)return showErr("Not connected. Check SUPABASE_
  if(r.error){showErr("Could not place order: "+r.error.message);$("go").disabled=$("done").disabled=false;return}
  try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p}))}catch(e){}
  setCart({});location.href="track.html"}
+$("loc").onclick=()=>{
+ if(!navigator.geolocation)return $("lm").textContent="Your browser can't share location. Please type your address.";
+ $("lm").textContent="Getting your location...";
+ navigator.geolocation.getCurrentPosition(async p=>{
+  const la=p.coords.latitude.toFixed(6),lo=p.coords.longitude.toFixed(6),map="https://maps.google.com/?q="+la+","+lo;let a="";
+  try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat="+la+"&lon="+lo);const j=await r.json();a=j.display_name||""}catch(e){}
+  $("ad").value=(a?a+" ":"")+"[Map pin: "+map+"]";
+  $("lm").textContent=a?"Location added. Please type your house or flat number at the start of the address.":"Location pin added. Please type your house number and street at the start.";
+ },e=>{$("lm").textContent=e.code==1?"Location permission was blocked. Please type your address instead.":"Couldn't get your location. Please type your address."},{enableHighAccuracy:true,timeout:15000})};
 </script></body></html>
