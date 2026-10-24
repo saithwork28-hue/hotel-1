@@ -18,11 +18,11 @@ $("go").onclick=async()=>{if(!sb)return $("er").textContent="Not connected. Chec
  let r;
  if(mode=="up"){const n=$("nm").value.trim(),p=$("ph").value.trim();
   if(n.length<2||!/^[6-9]\d{9}$/.test(p))return $("er").textContent="Enter your name and a valid 10-digit mobile number.";
-  $("go").disabled=true;r=await sb.auth.signUp({email,password:pw,options:{data:{name:n,phone:p}}});
+  $("go").disabled=true;r=await sb.auth.signUp({email,password:pw,options:{data:{name:n,phone:p},emailRedirectTo:location.origin+location.pathname}});
   if(!r.error&&!r.data.session){$("go").disabled=false;return $("er").textContent="Account created. Check your email to confirm it, then sign in."}}
  else{$("go").disabled=true;r=await sb.auth.signInWithPassword({email,password:pw})}
  $("go").disabled=false;if(r.error)return $("er").textContent=r.error.message;location.href=next};
 if(sb)sb.auth.getSession().then(({data})=>{const s=data.session;if(!s)return;if(q)return location.href=next;
  $("out").hidden=true;$("in").hidden=false;$("h").textContent="Your account";$("who").textContent=((s.user.user_metadata||{}).name||"")+" · "+s.user.email});
-$("so").onclick=async()=>{await sb.auth.signOut();location.reload()};
+$("so").onclick=async()=>{await sb.auth.signOut();try{["tc","tcd","lastOrder"].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
 </script></body></html>
