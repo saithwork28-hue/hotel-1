@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Your cart · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"></head><body>
+<html lang="en"><head><meta charset="utf-8"><title>Your cart · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Your cart</h1><div id="box"></div></main>
 <script src="shared.js"></script>
 <script>
+let signedIn=null;
+const cta=()=>signedIn===null?'<button class="btn" disabled>Checking sign-in...</button>':signedIn?'<a class="btn" href="checkout.html">Proceed to payment</a>':'<div style="background:#fff4e5;border:1px solid #ffd9a8;color:#8a4b00;padding:12px 14px;border-radius:12px;margin-top:14px;font-weight:600">🔒 Please sign in to place your order. Your cart will be saved.</div><a class="btn" href="login.html?next=checkout.html">Sign in to continue</a>';
 function draw(){
  const c=getCart(),ids=Object.keys(c);
  if(!ids.length){$("box").innerHTML='<div class="empty">Your cart is empty.<a class="btn" href="index.html">Browse restaurants</a></div>';return}
@@ -11,7 +13,7 @@ function draw(){
  $("box").innerHTML=ids.map(i=>`<div class="item"><div><b>${esc(c[i].n)}</b>${inr(c[i].p*c[i].q)}</div><div class="qty"><button data-m="${i}">−</button>${c[i].q}<button data-p="${i}">+</button></div></div>`).join("")+
  `<div style="margin-top:14px"><div class="row"><span>Item total</span><span>${inr(b.s)}</span></div><div class="row"><span>Delivery fee</span><span>${b.d?inr(b.d):"FREE"}</span></div><div class="row"><span>GST and charges</span><span>${inr(b.g)}</span></div><div class="row tot"><span>To pay</span><span>${inr(b.t)}</span></div></div>`+
  `<p class="m">${b.d?"Add "+inr(300-b.s)+" more for free delivery.":"You get free delivery on this order."}</p>`+
- `<a class="btn" href="checkout.html">Proceed to payment</a><a class="btn alt" href="index.html">Add more items</a>`}
+ `${cta()}<a class="btn alt" href="index.html">Add more items</a>`}
 document.addEventListener("click",e=>{
  const t=e.target.closest("button");if(!t)return;const c=getCart(),d=t.dataset;
  if(d.p&&c[d.p])c[d.p].q++;
@@ -19,4 +21,5 @@ document.addEventListener("click",e=>{
  else return;
  setCart(c);draw()});
 draw();
+if(sb)sb.auth.getSession().then(r=>{signedIn=!!r.data.session;draw()});else{signedIn=false;draw()}
 </script></body></html>
