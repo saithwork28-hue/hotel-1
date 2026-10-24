@@ -1,12 +1,36 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Sign in · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Sign in · Anwar Foods</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.stage{position:relative;min-height:calc(100vh - 62px);display:grid;place-items:center;padding:32px 16px;overflow:hidden;
+background:radial-gradient(600px 420px at 12% 18%,rgba(255,178,120,.45),transparent 60%),radial-gradient(520px 420px at 88% 82%,rgba(255,150,170,.35),transparent 60%),linear-gradient(135deg,#fff6ee,#ffeadc)}
+.fl{position:absolute;border-radius:50%;object-fit:cover;border:6px solid #fff;box-shadow:0 14px 34px rgba(232,71,43,.18);animation:fl 7s ease-in-out infinite}
+.f1{width:170px;height:170px;left:7%;top:12%}.f2{width:130px;height:130px;right:9%;top:10%;animation-delay:-2s}
+.f3{width:120px;height:120px;left:13%;bottom:10%;animation-delay:-4s}.f4{width:160px;height:160px;right:7%;bottom:12%;animation-delay:-1s}
+@keyframes fl{50%{transform:translateY(-14px)}}
+@media(max-width:860px){.fl{display:none}}
+@media(prefers-reduced-motion:reduce){.fl{animation:none}}
+.glass{position:relative;z-index:1;width:100%;max-width:420px;margin:0;padding:34px 30px 32px;background:rgba(255,255,255,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);border-radius:28px;box-shadow:0 24px 60px rgba(232,71,43,.15)}
+.eyebrow{text-align:center;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#e8472b}
+.glass h1{text-align:center;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:600;font-size:40px;margin:6px 0 4px;letter-spacing:-.5px}
+.sub{text-align:center;color:#8a6f62;font-size:14px;margin:0 0 18px}
+.seg{display:flex;background:rgba(232,71,43,.09);border-radius:999px;padding:4px;margin:6px 0 14px}
+.seg button{flex:1;padding:10px;border:0;border-radius:999px;font:700 14px inherit;font-family:inherit;color:#8a5a48;background:none;cursor:pointer}
+.seg button.on{background:#fff;color:#e8472b;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.glass .f{background:#fff;border:1px solid #f1d9cc;border-radius:14px;padding:14px;margin:6px 0}
+.glass .f:focus{outline:none;border-color:#e8472b;box-shadow:0 0 0 4px rgba(232,71,43,.12)}
+.glass .btn{background:linear-gradient(135deg,#e8472b,#ff7a3d);border-radius:999px;box-shadow:0 8px 20px rgba(232,71,43,.3)}
+</style></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
-<main><h1 id="h">Sign in</h1>
-<div id="out"><div style="display:flex;gap:8px"><button class="pay on" id="t1">Sign in</button><button class="pay" id="t2">Create account</button></div>
+<div class="stage">
+<img class="fl f1" src="images/biriyani.jpg" alt="" onerror="this.remove()"><img class="fl f2" src="images/pizza.jpg" alt="" onerror="this.remove()"><img class="fl f3" src="images/burger.jpg" alt="" onerror="this.remove()"><img class="fl f4" src="images/cakes.jpg" alt="" onerror="this.remove()">
+<main class="glass"><div class="eyebrow">Anwar Foods</div><h1 id="h">Sign in</h1><p class="sub">Welcome back. Your next meal is a few taps away.</p>
+<div id="out"><div class="seg"><button class="on" id="t1">Sign in</button><button id="t2">Create account</button></div>
 <div id="su" hidden><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
 <input class="f" id="em" type="email" placeholder="Email"><input class="f" id="pw" type="password" placeholder="Password (at least 6 characters)">
 <div id="er" class="err"></div><button class="btn" id="go">Sign in</button></div>
-<div id="in" hidden><p id="who" class="m"></p><a class="btn" href="my-orders.html">My orders</a><button class="btn" id="so" style="background:#6b6b6b">Sign out</button></div></main>
+<div id="in" hidden><p id="who" class="m" style="text-align:center"></p><a class="btn" href="my-orders.html">My orders</a><button class="btn" id="so" style="background:#6b6b6b;box-shadow:none">Sign out</button></div></main></div>
 <script src="shared.js"></script><script>
 let mode="in";const q=new URLSearchParams(location.search).get("next");
 const next=["checkout.html","cart.html","my-orders.html","index.html","track.html"].includes(q)?q:"index.html";
