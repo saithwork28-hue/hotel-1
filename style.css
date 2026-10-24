@@ -95,3 +95,7 @@ html{-webkit-text-size-adjust:100%}
  .toast{left:12px;right:12px;width:auto;max-width:none;transform:translateY(160px);justify-content:space-between}
  .toast.show{transform:translateY(0)}
 }
+
+/* clean, professional warning and error messages */
+.err{font-weight:500;font-size:13.5px;line-height:1.5;color:#b42318;background:#fef3f2;border:1px solid #fecdca;border-radius:10px;padding:10px 12px;margin-top:10px}
+.err:empty{display:none}
