@@ -1,34 +1,105 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>Track order · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script></head><body>
+<html lang="en"><head><meta charset="utf-8"><title>Track order · Anwar Foods</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+.tk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:22px 0 12px}
+.tk-head h2{margin:2px 0 0;font-size:22px;letter-spacing:-.3px}
+.chip2{font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.c-placed{background:#fff0e6;color:#c2410c}.c-preparing{background:#fff4d6;color:#a16207}.c-out{background:#e0f0ff;color:#1d4ed8}.c-delivered{background:#e3f6ea;color:#15803d}.c-cancelled{background:#fee4e2;color:#b42318}
+.mapcard{position:relative;border-radius:20px;overflow:hidden;border:1px solid #f1d9cc;box-shadow:0 10px 30px rgba(232,71,43,.12);background:#fdf3ea}
+.mapcard svg{display:block;width:100%;height:auto}
+.mapcard.off svg{filter:grayscale(1);opacity:.55}
+.eta{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.94);padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.cap{font-size:11.5px;color:#a08b7f;text-align:center;margin:8px 0 0}
+.stl{text-align:center;font-weight:700;font-size:16px;margin:16px 0 0}
+.stp{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin:20px 0 10px}
+.sl{position:absolute;left:12.5%;right:12.5%;top:20px;height:4px;background:#f1d9cc;border-radius:4px}
+.sl i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e8472b,#ff7a3d);border-radius:4px;transition:width .9s ease}
+.s{text-align:center;position:relative;z-index:1}
+.s b{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 6px;border-radius:50%;background:#fff;border:2px solid #f1d9cc;font-size:18px;filter:grayscale(1);opacity:.55}
+.s span{font-size:12px;color:#8a6f62}
+.s.d b{filter:none;opacity:1;border-color:#e8472b}
+.s.d span{color:#1c1c1c;font-weight:600}
+.s.now b{box-shadow:0 0 0 5px rgba(232,71,43,.18)}
+.its{margin-top:14px;padding-top:6px;border-top:1px dashed #e8c9b8}
+@media(max-width:420px){.s span{font-size:11px}.s b{width:38px;height:38px}.sl{top:18px}}
+@media(prefers-reduced-motion:reduce){.sl i{transition:none}}
+</style></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="index.html">Home</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Track your order</h1>
 <input class="f" id="no" inputmode="numeric" placeholder="Order number">
 <input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="Mobile number used for the order">
-<button class="btn" id="go">Track order</button><div id="er" class="err"></div><div id="res"></div></main>
+<button class="btn" id="go">Track order</button><div id="er" class="err"></div>
+
+<div id="res" hidden>
+ <div class="tk-head"><div><div class="m" id="tdt"></div><h2 id="tno"></h2></div><span class="chip2" id="tch"></span></div>
+ <div class="mapcard" id="mc">
+  <svg viewBox="0 0 600 260" role="img" aria-label="Delivery route map">
+   <rect width="600" height="260" fill="#fdf3ea"/>
+   <path d="M24 26h118a14 14 0 0 1 14 14v52H24z" fill="#e3f0d9"/>
+   <ellipse cx="478" cy="222" rx="74" ry="32" fill="#e3f0d9"/>
+   <path d="M-10 196C120 150 224 246 344 204S556 150 620 184" stroke="#d3e8f5" stroke-width="24" fill="none"/>
+   <g stroke="#fff" stroke-width="10" stroke-linecap="round" fill="none"><path d="M0 70H600M0 132H600M170 0V260M334 0V260M492 0V260"/></g>
+   <g stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"><path d="M0 102H600M0 28H600M90 0V260M250 0V260M412 0V260M560 0V260"/></g>
+   <g fill="#f6e3d3"><rect x="188" y="82" width="34" height="38" rx="6"/><rect x="262" y="84" width="50" height="34" rx="6"/><rect x="350" y="148" width="46" height="36" rx="6"/><rect x="424" y="84" width="46" height="34" rx="6"/><rect x="100" y="146" width="56" height="30" rx="6"/></g>
+   <path id="rt" d="M70 205C150 205 160 130 250 130S380 70 450 70S520 70 540 55" stroke="#c9b8aa" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round" fill="none"/>
+   <path id="rp" d="M70 205C150 205 160 130 250 130S380 70 450 70S520 70 540 55" stroke="#e8472b" stroke-width="5" stroke-linecap="round" fill="none" stroke-dasharray="0 2000"/>
+   <g transform="translate(70,205)"><circle r="19" fill="#fff" stroke="#e8472b" stroke-width="3"/><text text-anchor="middle" dominant-baseline="central" font-size="19">🏪</text></g>
+   <g transform="translate(540,55)"><circle r="19" fill="#fff" stroke="#15803d" stroke-width="3"/><text text-anchor="middle" dominant-baseline="central" font-size="19">🏠</text></g>
+   <g id="sc" transform="translate(70,205)"><circle r="20" fill="#e8472b"/><circle r="20" fill="none" stroke="#fff" stroke-width="3"/><text text-anchor="middle" dominant-baseline="central" font-size="20">🛵</text></g>
+  </svg>
+  <div class="eta" id="eta"></div>
+ </div>
+ <p class="cap">Illustrated route. Live rider location is coming soon.</p>
+ <p class="stl" id="stl"></p>
+ <div class="cx" id="cxl" hidden>This order was cancelled. Please call the restaurant if you have questions.</div>
+ <div class="stp" id="stp"><div class="sl"><i id="slf"></i></div>
+  <div class="s"><b>✓</b><span>Placed</span></div><div class="s"><b>🍳</b><span>Preparing</span></div><div class="s"><b>🛵</b><span>On the way</span></div><div class="s"><b>🏠</b><span>Delivered</span></div></div>
+ <div class="its" id="its"></div>
+</div>
+</main>
 
 <div class="pop" id="pop"><div class="box"><div class="tick">✓</div><h2>Order placed!</h2><p class="m" id="pm"></p>
 <button class="btn" id="pc">Track my order</button><a class="btn alt" href="index.html">Back to restaurants</a></div></div>
 
 <script src="shared.js"></script>
 <script>
-const S=[["placed","Order placed"],["preparing","Restaurant is preparing your food"],["out for delivery","Out for delivery"],["delivered","Delivered"]];
-let cur=null,tm=null,fresh=(document.referrer||"").indexOf("checkout.html")>-1;
+const KEYS=["placed","preparing","out for delivery","delivered"];
+const TXT={placed:"We have received your order",preparing:"The restaurant is preparing your food","out for delivery":"Your order is on its way",delivered:"Delivered. Enjoy your meal!"};
+const ETA={placed:"Arriving in about 30 min",preparing:"Arriving in about 25 min","out for delivery":"Arriving in about 12 min",delivered:"Delivered ✓"};
+const CH={placed:["c-placed","Order placed"],preparing:["c-preparing","Preparing"],"out for delivery":["c-out","On the way"],delivered:["c-delivered","Delivered"],cancelled:["c-cancelled","Cancelled"]};
+const PR={placed:0,preparing:0,"out for delivery":.6,delivered:1};
+let cur=null,tm=null,fresh=(document.referrer||"").indexOf("checkout.html")>-1,pc=0,first=true;
+const RT=$("rt"),LEN=RT.getTotalLength();
+function setP(t){const p=RT.getPointAtLength(LEN*t);$("sc").setAttribute("transform","translate("+p.x+","+p.y+")");$("rp").setAttribute("stroke-dasharray",(LEN*t)+" "+LEN)}
+function goTo(t){const f=pc,t0=performance.now(),d=1500;(function s(n){const k=Math.min(1,(n-t0)/d),e=1-Math.pow(1-k,3);pc=f+(t-f)*e;setP(pc);if(k<1)requestAnimationFrame(s)})(t0)}
+setP(0);
 async function look(){
  const no=$("no").value.trim(),ph=$("ph").value.trim();cur=null;$("er").textContent="";
  if(!sb)return $("er").textContent="Not connected. Check SUPABASE_KEY in shared.js.";
  if(!no||!/^[6-9]\d{9}$/.test(ph))return $("er").textContent="Enter your order number and 10-digit mobile number.";
  const r=await sb.rpc("track_order",{p_no:no,p_phone:ph});
- if(r.error||!r.data||!r.data.length){$("res").innerHTML="";return $("er").textContent="No order found. Check the order number and mobile number."}
- cur={no,ph};show(r.data[0]);clearInterval(tm);tm=setInterval(refresh,10000);
+ if(r.error||!r.data||!r.data.length){$("res").hidden=true;return $("er").textContent="No order found. Check the order number and mobile number."}
+ cur={no,ph};first=true;pc=0;setP(0);show(r.data[0]);clearInterval(tm);tm=setInterval(refresh,10000);
  if(fresh){fresh=false;$("pm").textContent="Order #"+r.data[0].order_no+" · Total "+inr(r.data[0].total);$("pop").classList.add("show")}}
 async function refresh(){if(!cur)return;const r=await sb.rpc("track_order",{p_no:cur.no,p_phone:cur.ph});if(r.data&&r.data.length)show(r.data[0])}
 function show(o){
- const k=S.findIndex(s=>s[0]==o.status);
- const st=o.status=="cancelled"?'<div class="cx">This order was cancelled. Please call the restaurant if you have questions.</div>':
- '<ul class="steps">'+S.map((s,i)=>`<li class="${i<=k?"d":""} ${i==k?"now":""}">${s[1]}</li>`).join("")+'</ul>';
- $("res").innerHTML=`<h2 style="margin:18px 0 0">Order #${esc(o.order_no)}</h2><div class="m">${new Date(o.created_at).toLocaleString()} · ${esc(String(o.payment_method).toUpperCase())}</div>${st}`+
- o.items.map(i=>`<div class="row"><span>${esc(i.qty)} × ${esc(i.name)}</span><span>${inr(i.qty*i.price)}</span></div>`).join("")+`<div class="row tot"><span>Total</span><span>${inr(o.total)}</span></div>`}
+ $("res").hidden=false;
+ $("tno").textContent="Order #"+o.order_no;
+ $("tdt").textContent=new Date(o.created_at).toLocaleString()+" · "+String(o.payment_method).toUpperCase();
+ const c=CH[o.status]||CH.placed;$("tch").className="chip2 "+c[0];$("tch").textContent=c[1];
+ const off=o.status=="cancelled",k=KEYS.indexOf(o.status);
+ $("mc").classList.toggle("off",off);$("sc").style.display=off?"none":"";
+ $("cxl").hidden=!off;$("stp").hidden=off;$("stl").hidden=off;$("eta").hidden=off;
+ if(!off){
+  $("stl").textContent=TXT[o.status]||"";$("eta").textContent=ETA[o.status]||"";
+  document.querySelectorAll(".s").forEach((e,i)=>{e.classList.toggle("d",i<=k);e.classList.toggle("now",i==k)});
+  $("slf").style.width=(Math.max(k,0)/3*100)+"%";
+  const t=PR[o.status]||0;if(first||Math.abs(t-pc)>.001)goTo(t);
+ }
+ first=false;
+ $("its").innerHTML=o.items.map(i=>`<div class="row"><span>${esc(i.qty)} × ${esc(i.name)}</span><span>${inr(i.qty*i.price)}</span></div>`).join("")+`<div class="row tot"><span>Total</span><span>${inr(o.total)}</span></div>`}
 $("go").onclick=look;
 $("pc").onclick=()=>$("pop").classList.remove("show");
 try{const l=JSON.parse(localStorage.getItem("lastOrder")||"null");if(l){$("no").value=l.no;$("ph").value=l.phone;look()}}catch(e){}
