@@ -102,5 +102,5 @@ function show(o){
  $("its").innerHTML=o.items.map(i=>`<div class="row"><span>${esc(i.qty)} × ${esc(i.name)}</span><span>${inr(i.qty*i.price)}</span></div>`).join("")+`<div class="row tot"><span>Total</span><span>${inr(o.total)}</span></div>`}
 $("go").onclick=look;
 $("pc").onclick=()=>$("pop").classList.remove("show");
-try{const l=JSON.parse(localStorage.getItem("lastOrder")||"null");if(l){$("no").value=l.no;$("ph").value=l.phone;look()}}catch(e){}
+(async()=>{try{const l=JSON.parse(localStorage.getItem("lastOrder")||"null");if(!l||!sb)return;const{data}=await sb.auth.getSession();if(data.session&&l.uid===data.session.user.id){$("no").value=l.no;$("ph").value=l.phone;look()}}catch(e){}})();
 </script></body></html>
