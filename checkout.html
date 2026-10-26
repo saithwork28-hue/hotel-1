@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Payment · Tasteo</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head><body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"></head><body>
 <header><a class="logo" href="index.html">Anwar Foods</a><a href="index.html">Home</a><a href="cart.html">Cart</a><a href="track.html">Track order</a><a href="login.html">Account</a></header>
 <main><h1>Payment</h1><div id="sum" class="m"></div>
 <div id="s1"><b>Delivery details</b><input class="f" id="nm" placeholder="Full name"><input class="f" id="ph" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"><input class="f" id="ad" placeholder="House no, street, area, Nagercoil"><button type="button" class="pay" id="loc" style="justify-content:center;font-weight:700;color:#e8472b">📍 Use my current location</button><div id="lm" class="m"></div>
@@ -11,7 +11,8 @@
 <div id="s2" hidden><p class="m">On mobile, tap the button to open your UPI app. On desktop, scan the QR code with any UPI app.</p><div class="qr" id="qr"></div><a class="btn" id="lnk" href="#">Pay with UPI app</a>
 <p class="m" style="margin-top:16px">After paying, enter the 12-digit UPI reference (UTR) from your app.</p><input class="f" id="utr" inputmode="numeric" maxlength="12" placeholder="12-digit UPI reference number"><div id="er2" class="err"></div><button class="btn" id="done">I have paid · place order</button></div></main>
 <script src="shared.js"></script><script>
-(async()=>{if(!sb)return;const{data}=await sb.auth.getSession();if(!data.session){location.href="login.html?next=checkout.html";return}const m=data.session.user.user_metadata||{};$("nm").value=m.name||"";$("ph").value=m.phone||""})();
+let UID=null;
+(async()=>{if(!sb)return;const{data}=await sb.auth.getSession();if(!data.session){location.href="login.html?next=checkout.html";return}UID=data.session.user.id;const m=data.session.user.user_metadata||{};$("nm").value=m.name||"";$("ph").value=m.phone||""})();
 const c=getCart();if(!Object.keys(c).length)location.href="cart.html";
 const B=bill(c);let pay="upi",det={};
 $("sum").textContent="Total to pay: "+inr(B.t)+" · "+Object.values(c).reduce((a,v)=>a+v.q,0)+" items";
@@ -30,7 +31,7 @@ async function submit(utr){if(!sb)return showErr("Not connected. Check SUPABASE_
  const items=Object.entries(c).map(([i,v])=>({id:+i,qty:v.q}));
  const r=await sb.rpc("place_order",{p_name:det.n,p_phone:det.p,p_addr:det.a,p_items:items,p_method:pay,p_utr:utr});
  if(r.error){showErr("Could not place order: "+r.error.message);$("go").disabled=$("done").disabled=false;return}
- try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p}))}catch(e){}
+ try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p,uid:UID}))}catch(e){}
  setCart({});location.href="track.html"}
 $("loc").onclick=()=>{
  if(!navigator.geolocation)return $("lm").textContent="Your browser can't share location. Please type your address.";
