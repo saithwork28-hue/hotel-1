@@ -33,7 +33,8 @@ background:radial-gradient(600px 420px at 12% 18%,rgba(255,178,120,.45),transpar
 <div id="cf" hidden><p class="sub" id="cfm"></p><div id="er2" class="err"></div><button class="btn" id="cfb">I have confirmed my email, sign in</button></div></div>
 <div id="in" hidden><p id="who" class="m" style="text-align:center"></p><a class="btn" href="my-orders.html">My orders</a><button class="btn" id="so" style="background:#6b6b6b;box-shadow:none">Sign out</button></div></main></div>
 <script src="shared.js"></script><script>
-let pend="",pendPw="";let mode="in";const q=new URLSearchParams(location.search).get("next");
+let pend="",pendPw="";
+function sw(r){try{const u=r.data&&r.data.user?r.data.user.id:"";const p=localStorage.getItem("lastUid");if(p&&u&&p!==u)["tc","tcd","lastOrder"].forEach(k=>localStorage.removeItem(k));if(u)localStorage.setItem("lastUid",u)}catch(e){}}let mode="in";const q=new URLSearchParams(location.search).get("next");
 const next=["checkout.html","cart.html","my-orders.html","index.html","track.html"].includes(q)?q:"index.html";
 function tab(m){mode=m;$("su").hidden=m=="in";$("t1").classList.toggle("on",m=="in");$("t2").classList.toggle("on",m=="up");$("go").textContent=m=="in"?"Sign in":"Create account";$("er").textContent=""}
 $("t1").onclick=()=>tab("in");$("t2").onclick=()=>tab("up");
@@ -46,10 +47,10 @@ $("go").onclick=async()=>{if(!sb)return $("er").textContent="Not connected. Chec
   $("go").disabled=true;r=await sb.auth.signUp({email,password:pw,options:{data:{name:n,phone:p},emailRedirectTo:location.origin+location.pathname}});
   if(!r.error&&!r.data.session){$("go").disabled=false;$("cf").hidden=false;$("cfm").textContent="We sent a confirmation email to "+email+". Click the link in that email. If you then see a Page not found screen, that is fine: your email is confirmed. Come back to this tab and press the button below.";pend=email;pendPw=pw;return}}
  else{$("go").disabled=true;r=await sb.auth.signInWithPassword({email,password:pw})}
- $("go").disabled=false;if(r.error)return $("er").textContent=r.error.message;location.href=next};
+ $("go").disabled=false;if(r.error)return $("er").textContent=r.error.message;sw(r);location.href=next};
 if(sb)sb.auth.getSession().then(({data})=>{const s=data.session;if(!s)return;if(q)return location.href=next;
  $("out").hidden=true;$("in").hidden=false;$("h").textContent="Your account";$("who").textContent=((s.user.user_metadata||{}).name||"")+" · "+s.user.email});
 if(q==="checkout.html")$("sub").textContent="Please sign in or create an account to place your order. Your cart is saved.";
-$("cfb").onclick=async()=>{$("cfb").disabled=true;const r=await sb.auth.signInWithPassword({email:pend,password:pendPw});$("cfb").disabled=false;if(r.error)return $("er2").textContent=/not confirmed/i.test(r.error.message)?"Your email is not confirmed yet. Click the link in the email first, then press this button again.":r.error.message;location.href=next};
+$("cfb").onclick=async()=>{$("cfb").disabled=true;const r=await sb.auth.signInWithPassword({email:pend,password:pendPw});$("cfb").disabled=false;if(r.error)return $("er2").textContent=/not confirmed/i.test(r.error.message)?"Your email is not confirmed yet. Click the link in the email first, then press this button again.":r.error.message;sw(r);location.href=next};
 $("so").onclick=async()=>{await sb.auth.signOut();try{["tc","tcd","lastOrder"].forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()};
 </script></body></html>
