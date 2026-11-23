@@ -34,16 +34,16 @@ async function submit(utr){if(!sb)return showErr("Not connected. Check SUPABASE_
  try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p,uid:UID}))}catch(e){}
  setCart({});location.href="track.html"}
 /* Address from the location the customer allowed on the home page (or from the button below) */
-async function fillAddr(la,lo,why){
- la=(+la).toFixed(6);lo=(+lo).toFixed(6);const map="https://maps.google.com/?q="+la+","+lo;let a="";
- $("lm").textContent="Getting your address...";
- try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat="+la+"&lon="+lo);const j=await r.json();a=j.display_name||""}catch(e){}
+async function fillAddr(la,lo,why,known){
+ la=(+la).toFixed(6);lo=(+lo).toFixed(6);const map="https://maps.google.com/?q="+la+","+lo;let a=known||"";
+ if(!a){$("lm").textContent="Getting your address...";
+  try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat="+la+"&lon="+lo);const j=await r.json();a=j.display_name||""}catch(e){}}
  if(why==="auto"&&$("ad").value.trim().length>4){$("lm").textContent="";return}   /* never overwrite what the customer typed */
  $("ad").value=(a?a+" ":"")+"[Map pin: "+map+"]";
  $("lm").textContent=a?"Address filled from your location. Please type your house or flat number at the start.":"Location pin added. Please type your house number and street at the start.";
 }
-function savedLoc(){try{return JSON.parse(localStorage.getItem("aflLoc")||sessionStorage.getItem("aflLoc")||"null")}catch(e){return null}}
-{const s=savedLoc();if(s&&s.la&&s.lo)fillAddr(s.la,s.lo,"auto")}
+function savedLoc(){try{const d=JSON.parse(localStorage.getItem("aflLoc")||"null");return d&&(!d.exp||d.exp>Date.now())?d:null}catch(e){return null}}
+{const s=savedLoc();if(s&&s.la&&s.lo)fillAddr(s.la,s.lo,"auto",s.addr)}
 $("loc").onclick=()=>{
  if(!navigator.geolocation)return $("lm").textContent="Your browser can't share location. Please type your address.";
  $("lm").textContent="Getting your location...";
