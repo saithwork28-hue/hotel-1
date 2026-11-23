@@ -33,13 +33,20 @@ async function submit(utr){if(!sb)return showErr("Not connected. Check SUPABASE_
  if(r.error){showErr("Could not place order: "+r.error.message);$("go").disabled=$("done").disabled=false;return}
  try{localStorage.setItem("lastOrder",JSON.stringify({no:r.data,phone:det.p,uid:UID}))}catch(e){}
  setCart({});location.href="track.html"}
+/* Address from the location the customer allowed on the home page (or from the button below) */
+async function fillAddr(la,lo,why){
+ la=(+la).toFixed(6);lo=(+lo).toFixed(6);const map="https://maps.google.com/?q="+la+","+lo;let a="";
+ $("lm").textContent="Getting your address...";
+ try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat="+la+"&lon="+lo);const j=await r.json();a=j.display_name||""}catch(e){}
+ if(why==="auto"&&$("ad").value.trim().length>4){$("lm").textContent="";return}   /* never overwrite what the customer typed */
+ $("ad").value=(a?a+" ":"")+"[Map pin: "+map+"]";
+ $("lm").textContent=a?"Address filled from your location. Please type your house or flat number at the start.":"Location pin added. Please type your house number and street at the start.";
+}
+function savedLoc(){try{return JSON.parse(localStorage.getItem("aflLoc")||sessionStorage.getItem("aflLoc")||"null")}catch(e){return null}}
+{const s=savedLoc();if(s&&s.la&&s.lo)fillAddr(s.la,s.lo,"auto")}
 $("loc").onclick=()=>{
  if(!navigator.geolocation)return $("lm").textContent="Your browser can't share location. Please type your address.";
  $("lm").textContent="Getting your location...";
- navigator.geolocation.getCurrentPosition(async p=>{
-  const la=p.coords.latitude.toFixed(6),lo=p.coords.longitude.toFixed(6),map="https://maps.google.com/?q="+la+","+lo;let a="";
-  try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat="+la+"&lon="+lo);const j=await r.json();a=j.display_name||""}catch(e){}
-  $("ad").value=(a?a+" ":"")+"[Map pin: "+map+"]";
-  $("lm").textContent=a?"Location added. Please type your house or flat number at the start of the address.":"Location pin added. Please type your house number and street at the start.";
- },e=>{$("lm").textContent=e.code==1?"Location permission was blocked. Please type your address instead.":"Couldn't get your location. Please type your address."},{enableHighAccuracy:true,timeout:15000})};
+ navigator.geolocation.getCurrentPosition(p=>fillAddr(p.coords.latitude,p.coords.longitude,"btn"),
+  e=>{$("lm").textContent=e.code==1?"Location permission was blocked. Please type your address instead.":"Couldn't get your location. Please type your address."},{enableHighAccuracy:true,timeout:15000})};
 </script></body></html>
