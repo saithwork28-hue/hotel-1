@@ -179,36 +179,37 @@ document.addEventListener("click",e=>{
 $("#q").addEventListener("input",render);render();
 
 /* ---- Location popup: Allow while using the site / Allow this time only / Never ---- */
-const LK="aflLoc",PK="aflLocPref";
+const LK="aflLoc",PK="aflLocPref",ONCE=2*60*60*1000;
 const locSet=t=>{$("#locb").textContent=t};
-const locSaved=()=>{try{return JSON.parse(localStorage.getItem(LK)||"null")}catch(e){return null}};
-async function locLabel(la,lo){try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&lat="+la+"&lon="+lo);const j=await r.json(),a=j.address||{};
+function locSaved(){try{const d=JSON.parse(localStorage.getItem(LK)||"null");if(!d)return null;if(d.exp&&d.exp<Date.now()){localStorage.removeItem(LK);return null}return d}catch(e){return null}}
+async function locLookup(la,lo){try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&addressdetails=1&lat="+la+"&lon="+lo);const j=await r.json(),a=j.address||{};
  const area=a.suburb||a.neighbourhood||a.village||a.town||a.city_district||"",city=a.city||a.town||a.county||a.state_district||"";
- return [area,city].filter((x,i,arr)=>x&&arr.indexOf(x)===i).join(", ")||"Your location"}catch(e){return"Your location"}}
+ return{label:[area,city].filter((x,i,arr)=>x&&arr.indexOf(x)===i).join(", ")||"Your location",addr:j.display_name||""}}catch(e){return{label:"Your location",addr:""}}}
+const LERR={1:"Location blocked in browser settings",2:"Location unavailable on this device",3:"Location timed out, tap Change to retry"};
 function locGet(mode,quiet){
  if(!quiet)locSet("Finding you...");
- if(!navigator.geolocation){if(!quiet)locSet("Nagercoil, Tamil Nadu");return}
+ if(!navigator.geolocation){if(!quiet)locSet("Location not supported here");return}
  navigator.geolocation.getCurrentPosition(async p=>{
-  const la=+p.coords.latitude.toFixed(5),lo=+p.coords.longitude.toFixed(5),label=await locLabel(la,lo);
-  locSet(label);const d=JSON.stringify({la,lo,label,mode});
-  try{if(mode==="always")localStorage.setItem(LK,d);else sessionStorage.setItem(LK,d)}catch(e){}
- },()=>{if(!quiet)locSet("Nagercoil, Tamil Nadu")},{timeout:12000,maximumAge:600000});
+  const la=+p.coords.latitude.toFixed(5),lo=+p.coords.longitude.toFixed(5),g=await locLookup(la,lo);
+  locSet(g.label);
+  const d={la,lo,label:g.label,addr:g.addr,mode};if(mode==="once")d.exp=Date.now()+ONCE;
+  try{localStorage.setItem(LK,JSON.stringify(d))}catch(e){}
+ },err=>{if(!quiet)locSet(LERR[err.code]||"Couldn't get your location")},{timeout:15000,maximumAge:600000});
 }
 const locAsk=()=>{$("#lpop").hidden=false};
 function locChoice(c){
  $("#lpop").hidden=true;
  try{
-  if(c==="never"){localStorage.setItem(PK,"never");localStorage.removeItem(LK);sessionStorage.removeItem(LK);locSet("Nagercoil, Tamil Nadu");return}
-  localStorage.removeItem(PK);if(c==="once")localStorage.removeItem(LK);
+  if(c==="never"){localStorage.setItem(PK,"never");localStorage.removeItem(LK);locSet("Nagercoil, Tamil Nadu");return}
+  localStorage.removeItem(PK);localStorage.removeItem(LK);
  }catch(e){}
  locGet(c);
 }
 async function locInit(){
- let pref=null,saved=locSaved(),ses=null;
- try{pref=localStorage.getItem(PK);ses=JSON.parse(sessionStorage.getItem(LK)||"null")}catch(e){}
+ let pref=null;const saved=locSaved();
+ try{pref=localStorage.getItem(PK)}catch(e){}
  let perm="prompt";try{perm=(await navigator.permissions.query({name:"geolocation"})).state}catch(e){}
- if(saved){locSet(saved.label);if(perm==="granted")locGet("always",true);return}
- if(ses){locSet(ses.label);return}
+ if(saved){locSet(saved.label);if(saved.mode==="always"&&perm==="granted")locGet("always",true);return}
  if(pref==="never"||perm==="denied")return;
  setTimeout(locAsk,900);
 }
